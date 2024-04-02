@@ -1,0 +1,69 @@
+:root {
+  --bg-color: #DBE7E5;
+  --main-color: #335650;
+  --light-accent: #74AB4D;
+  --dark-accent: #24413D;
+  --red-color: #EA5672;
+  --yellow-color: #E4DC53;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--bg-color);
+}
+
+.outerCircle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50vh;
+  height: 50vh;
+  border-radius: 50%;
+  background-color: var(--main-color); 
+}
+
+.timerBarCircle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 49vh;
+  height: 49vh;
+  border-radius: 50%;
+  background-color: var(--light-accent); 
+}
+
+.innerCircle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 46.5vh;
+  height: 46.5vh;
+  border-radius: 50%;
+  background-color: var(--main-color); 
+}
+
+.innerColumnContainer{
+  display: flex;
+  flex-direction: column;
+}
+.timeContainer{
+  display: flex;
+  flex-direction: row;
+  
+  font-size: 8vh;
+  font-weight: 700;
+  font-family: "MuseoModerno", sans-serif;
+  line-height: 100%;
+}
+
+.timeContainer.on{
+  color: var(--light-accent);
+}
+.timeContainer.off{
+  color: var(--dark-accent);
+}
