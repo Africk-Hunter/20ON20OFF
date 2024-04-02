@@ -50,12 +50,13 @@ body {
 .innerColumnContainer{
   display: flex;
   flex-direction: column;
+  gap: 5%;
 }
 .timeContainer{
   display: flex;
   flex-direction: row;
-  
-  font-size: 8vh;
+  gap: 5%;
+  font-size: 4rem;
   font-weight: 700;
   font-family: "MuseoModerno", sans-serif;
   line-height: 100%;
@@ -64,6 +65,44 @@ body {
 .timeContainer.on{
   color: var(--light-accent);
 }
+
 .timeContainer.off{
   color: var(--dark-accent);
+}
+
+.buttonHolder{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5%;
+}
+
+.timerBtn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 5rem;
+  padding: 2% 4% 2% 4%;
+  border-radius: .5rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  font-family: "MuseoModerno", sans-serif;
+  color: var(--main-color);
+  margin: 5% 0 0 0;
+}
+.timerBtn:hover{
+  cursor: pointer;
+  
+}
+.timerBtn.start{
+  background: var(--bg-color);
+}
+/* .timerBtn.start:hover{
+  background: var(--light-accent);
+} */
+.timerBtn.pause{
+  background: var(--yellow-color);
+}
+.timerBtn.reset{
+  background: var(--red-color);
 }
