@@ -55,6 +55,8 @@ body {
 .timeContainer{
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
   gap: 5%;
   font-size: 4rem;
   font-weight: 700;
@@ -75,13 +77,14 @@ body {
   justify-content: center;
   align-items: center;
   gap: 5%;
+  margin-top: 5%;
 }
 
 .timerBtn{
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 5rem;
+  width: 5.5rem;
   padding: 2% 4% 2% 4%;
   border-radius: .5rem;
   font-size: 1.4rem;
@@ -89,6 +92,8 @@ body {
   font-family: "MuseoModerno", sans-serif;
   color: var(--main-color);
   margin: 5% 0 0 0;
+  user-select: none;
+  transition: all .25s ease;
 }
 .timerBtn:hover{
   cursor: pointer;
@@ -96,13 +101,33 @@ body {
 }
 .timerBtn.start{
   background: var(--bg-color);
+  
 }
-/* .timerBtn.start:hover{
+.timerBtn.start:hover{
   background: var(--light-accent);
-} */
+  color: var(--bg-color);
+  transform: scale(1.1);
+} 
 .timerBtn.pause{
   background: var(--yellow-color);
 }
+.timerBtn.pause:hover{
+  background: var(--yellow-color);
+  transform: scale(1.1);
+}
 .timerBtn.reset{
   background: var(--red-color);
+}
+.timerBtn.reset:hover{
+  background: var(--red-color);
+  transform: scale(1.1);
+}
+.timerBtn.resume{
+  background: var(--bg-color);
+  color: var(--main-color);
+}
+.timerBtn.resume:hover{
+/*   background: var(--bg-color);
+  color: var(--main-color); */
+  transform: scale(1.1);
 }
