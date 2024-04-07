@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Timer.css';
 import chime from './chime.mp3'
 
-let onInitialSeconds = 21;
+let onInitialSeconds = 1220;
 
 function Timer() {
     return (

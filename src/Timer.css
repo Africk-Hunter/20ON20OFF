@@ -223,12 +223,12 @@ body {
 }
 @media only screen and (max-width: 700px) {
   .timerBtn.loopOff{
-    width: 5rem;
+    width: 6rem;
     background: var(--dark-accent);
     color: var(--bg-color);
   }
   .timerBtn.loopOn{
-    width: 5rem;
+    width: 6rem;
     background: var(--light-accent);
     color: var(--bg-color);
   }
