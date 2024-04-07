@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Timer.css';
+import chime from './chime.mp3'
 
-let onInitialSeconds = 1220;
+let onInitialSeconds = 21;
 
 function Timer() {
     return (
@@ -21,6 +22,12 @@ function InnerTimer(){
     const [timerStarted, setTimerStarted] = useState(false);
     const [timerPaused, setTimerPaused] = useState(false);
     const [timerFinished, setTimerFinished] = useState(false);
+    const [chimePlayed, setChimePlayed] = useState(false);
+    const [looping, setLooping] = useState(false);
+
+    let secondsWithoutOffTime = secondsRemaining - 20;
+    let minutes = Math.floor(secondsWithoutOffTime / 60);
+    let seconds = secondsWithoutOffTime - (minutes * 60);
 
     useEffect(() => {
         let timer;
@@ -43,7 +50,7 @@ function InnerTimer(){
                 break;
             case "RESET":
                 resetTimer();
-                ifTimerFinished(false);
+                setIfTimerFinished(false);
                 break;
             case "PAUSE":
                 pauseTimer();
@@ -64,15 +71,14 @@ function InnerTimer(){
     function resetTimer() {
         setSecondsRemaining(onInitialSeconds);
         setTimerStarted(false);
-    }
-    
+        toggleChimePlayed(false);
+    } 
     function pauseTimer() {
         setTimerPaused(true);
     }
-    function ifTimerFinished(isTimerFinished){
+    function setIfTimerFinished(isTimerFinished){
         setTimerFinished(isTimerFinished);
     }
-    
     function resumeTimer() {
         setTimerPaused(false);
         if(secondsRemaining > 0){
@@ -81,30 +87,50 @@ function InnerTimer(){
             setSecondsRemaining(secondsRemaining);
         }
     }
-    
-    let secondsWithoutOffTime = secondsRemaining - 20;
-    const minutes = Math.floor(secondsWithoutOffTime / 60);
-    let seconds = secondsWithoutOffTime - (minutes * 60);
+    function toggleChimePlayed(hasChimePlayed){
+        setChimePlayed(hasChimePlayed);
+    }
+    function toggleLoop(loopBool){
+        setLooping(loopBool);
+    }
+
+    function playSound(){
+        let chimeSound = new Audio(chime);
+        chimeSound.volume = .2;
+        chimeSound.play();
+    }
+
+    useEffect(() => {
+        if (secondsRemaining === 0 && looping) {
+            resetTimer();
+            startTimer();
+        }
+        if(secondsRemaining === 20 && !chimePlayed){
+            playSound();
+            toggleChimePlayed(true);
+        }
+        if(secondsRemaining === 0 && timerFinished === false && looping === false){
+            setIfTimerFinished(true);
+        }
+    }, [secondsRemaining, looping]);
 
     if(timerStarted){
-        if(secondsRemaining === 0 && timerFinished === false){
-            ifTimerFinished(true);
-        }
         if(secondsRemaining <= 20){
-            seconds = secondsRemaining;
             return (
-                <div class="innerColumnContainer">
+                <div className="innerColumnContainer">
                     <TimeAsset time="00:00" label="ON"/>
-                    <TimeAsset time={`00:${seconds.toString().padStart(2, '0')}`} label="OFF"/>
-                    <ButtonContainer timerStarted={timerStarted} toggleTimer={toggleTimer} timerPaused={timerPaused} timerFinished={timerFinished}/>
+                    <TimeAsset time={`00:${secondsRemaining.toString().padStart(2, '0')}`} label="OFF"/>
+                    <ButtonContainer timerStarted={timerStarted} toggleTimer={toggleTimer} timerPaused={timerPaused} timerFinished={timerFinished} looping={looping}/>
+                    {!looping ? <TimerButton label="LOOP OFF" onClick={() => toggleLoop(!looping)} /> : <TimerButton label="LOOP ON" onClick={() => toggleLoop(!looping)} />}
                 </div>
             );
         } else{
             return (
-                <div class="innerColumnContainer">
+                <div className="innerColumnContainer">
                     <TimeAsset time={`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`} label="ON"/>
                     <TimeAsset time="00:20" label="OFF"/>
-                    <ButtonContainer timerStarted={timerStarted} toggleTimer={toggleTimer} timerPaused={timerPaused}/>
+                    <ButtonContainer timerStarted={timerStarted} toggleTimer={toggleTimer} timerPaused={timerPaused} looping={looping}/>
+                    {!looping ? <TimerButton label="LOOP OFF" onClick={() => toggleLoop(!looping)} /> : <TimerButton label="LOOP ON" onClick={() => toggleLoop(!looping)} />}
                 </div>
             );
         }
@@ -112,14 +138,16 @@ function InnerTimer(){
     }
     else{
         return (
-            <div class="innerColumnContainer">
+            <div className="innerColumnContainer">
                 <TimeAsset time="20" label="ON"/>
                 <TimeAsset time="20" label="OFF"/>
-                <ButtonContainer timerStarted={timerStarted} toggleTimer={toggleTimer} timerPaused={timerPaused}/>
+                <ButtonContainer timerStarted={timerStarted} toggleTimer={toggleTimer} timerPaused={timerPaused} looping={looping}/>
+                {!looping ? <TimerButton label="LOOP OFF" onClick={() => toggleLoop(!looping)} /> : <TimerButton label="LOOP ON" onClick={() => toggleLoop(!looping)} />}
             </div>
         );
     }
 }
+
 
 function TimeAsset(props){
 
@@ -139,38 +167,38 @@ function TimeAsset(props){
     );
 }
 
-function ButtonContainer({ timerStarted, toggleTimer, timerPaused, timerFinished }) {
-    if (timerStarted === false) {
+function ButtonContainer({ timerStarted, toggleTimer, timerPaused, timerFinished, looping }) {
+    const isTimerFinishedAndNotLooping = timerFinished && !looping;
+
+    if (!timerStarted) {
         return (
             <div className="buttonHolder">
                 <TimerButton label="START" onClick={() => toggleTimer("START")} />
             </div>
         );
+    } else if (isTimerFinishedAndNotLooping) {
+        return (
+            <div className="buttonHolder">
+                <TimerButton label="RESET" onClick={() => toggleTimer("RESET")} />
+            </div>
+        );
+    } else if (timerPaused) {
+        return (
+            <div className="buttonHolder">
+                <TimerButton label="RESUME" onClick={() => toggleTimer("RESUME")} />
+                <TimerButton label="RESET" onClick={() => toggleTimer("RESET")} />
+            </div>
+        );
     } else {
-        if(timerFinished){
-            return (
-                <div className="buttonHolder">
-                    <TimerButton label="RESET" onClick={() => toggleTimer("RESET")} />
-                </div>
-            );
-        }
-        if(timerPaused){
-            return (
-                <div className="buttonHolder">
-                    <TimerButton label="RESUME" onClick={() => toggleTimer("RESUME")} />
-                    <TimerButton label="RESET" onClick={() => toggleTimer("RESET")} />
-                </div>
-            );
-        } else{
-            return (
-                <div className="buttonHolder">
-                    <TimerButton label="PAUSE" onClick={() => toggleTimer("PAUSE")} />
-                    <TimerButton label="RESET" onClick={() => toggleTimer("RESET")} />
-                </div>
-            );
-        }
+        return (
+            <div className="buttonHolder">
+                <TimerButton label="PAUSE" onClick={() => toggleTimer("PAUSE")} />
+                <TimerButton label="RESET" onClick={() => toggleTimer("RESET")} />
+            </div>
+        );
     }
 }
+
 
 
 function TimerButton(props) {
@@ -187,6 +215,12 @@ function TimerButton(props) {
             break;
         case "RESUME":
             buttonClass = "resume";
+            break;
+        case "LOOP OFF":
+            buttonClass = "loopOff";
+            break;
+        case "LOOP ON":
+            buttonClass = "loopOn";
             break;
         default:
             break;

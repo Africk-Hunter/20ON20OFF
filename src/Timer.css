@@ -80,28 +80,30 @@ body {
 .innerColumnContainer{
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 5%;
 }
 .timeContainer{
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
   gap: 5%;
   font-size: 4rem;
   font-weight: 700;
-  font-family: "MuseoModerno", sans-serif;
+  font-family: "Martian Mono", monospace;
   line-height: 100%;
   user-select: none;
 }
+
 @media only screen and (max-width: 700px) {
   .timeContainer{
-    font-size: 3rem;
+    font-size: 2.5rem;
   }
 }
 @media only screen and (min-width: 1921px) {
   .timeContainer{
-    font-size: 5.7rem;
+    font-size: 5rem;
   }
 }
 
@@ -118,8 +120,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 3rem;
   gap: 5%;
-  margin-top: 5%;
+  margin-top: 1rem;
+  transition: all .5s ease;
 }
 
 .timerBtn{
@@ -127,23 +131,33 @@ body {
   justify-content: center;
   align-items: center;
   width: 5.5rem;
-  padding: 2% 4% 2% 4%;
+  padding: .5rem .7rem .5rem .7rem;
   border-radius: .5rem;
   font-size: 1.4rem;
   font-weight: 600;
-  font-family: "MuseoModerno", sans-serif;
+  font-family: "Martian Mono", monospace;
   color: var(--main-color);
   margin: 5% 0 0 0;
   user-select: none;
   transition: all .25s ease;
+
 }
 @media only screen and (min-width: 1921px) {
   .timerBtn{
     width: 7rem;
-    padding: 2.5% 4.5% 2.5% 4.5%;
+    padding: .5rem .7rem .5rem .7rem;
     font-size: 1.7rem;
   }
 }
+@media only screen and (max-width: 700px) {
+  .timerBtn{
+    width: 3rem;
+    padding: .5rem .7rem .5rem .7rem;
+    font-size: 1rem;
+    margin: 0 0 0 0;
+  }
+}
+
 
 .timerBtn:hover{
   cursor: pointer;
@@ -151,7 +165,6 @@ body {
 }
 .timerBtn.start{
   background: var(--bg-color);
-  
 }
 .timerBtn.start:hover{
   background: var(--light-accent);
@@ -178,4 +191,45 @@ body {
 }
 .timerBtn.resume:hover{
   transform: scale(1.1);
+}
+.timerBtn.loopOff{
+  width: 8rem;
+  background: var(--dark-accent);
+  color: var(--bg-color);
+}
+.timerBtn.loopOff:hover{
+  transform: scale(1.1);
+}
+.timerBtn.loopOn{
+  width: 8rem;
+  background: var(--light-accent);
+  color: var(--bg-color);
+}
+.timerBtn.loopOn:hover{
+  transform: scale(1.1);
+}
+
+@media only screen and (min-width: 1921px) {
+  .timerBtn.loopOff{
+    width: 10rem;
+    background: var(--dark-accent);
+    color: var(--bg-color);
+  }
+  .timerBtn.loopOn{
+    width: 10rem;
+    background: var(--light-accent);
+    color: var(--bg-color);
+  }
+}
+@media only screen and (max-width: 700px) {
+  .timerBtn.loopOff{
+    width: 5rem;
+    background: var(--dark-accent);
+    color: var(--bg-color);
+  }
+  .timerBtn.loopOn{
+    width: 5rem;
+    background: var(--light-accent);
+    color: var(--bg-color);
+  }
 }
