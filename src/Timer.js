@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './Timer.css';
 
 let onInitialSeconds = 1220;
-let offSecondsRemaining = 20;
 
 function Timer() {
     return (
@@ -21,6 +20,7 @@ function InnerTimer(){
     const [secondsRemaining, setSecondsRemaining] = useState(onInitialSeconds);
     const [timerStarted, setTimerStarted] = useState(false);
     const [timerPaused, setTimerPaused] = useState(false);
+    const [timerFinished, setTimerFinished] = useState(false);
 
     useEffect(() => {
         let timer;
@@ -37,32 +37,66 @@ function InnerTimer(){
     }, [timerStarted, secondsRemaining, timerPaused]);
 
     function toggleTimer(label) {
-        if (label === "START") {
-            setTimerStarted(true);
-            setTimerPaused(false);
-        } else if (label === "RESET") {
-            setSecondsRemaining(onInitialSeconds);
-            setTimerStarted(false);
-        } else if (label === "PAUSE"){
-            setTimerPaused(true);
-        } else if (label === "RESUME"){
-            setTimerPaused(false);
-            setSecondsRemaining(secondsRemaining - 1);
+        switch(label) {
+            case "START":
+                startTimer();
+                break;
+            case "RESET":
+                resetTimer();
+                ifTimerFinished(false);
+                break;
+            case "PAUSE":
+                pauseTimer();
+                break;
+            case "RESUME":
+                resumeTimer();
+                break;
+            default:
+                break;
         }
     }
+    
+    function startTimer() {
+        setTimerStarted(true);
+        setTimerPaused(false);
+    }
+    
+    function resetTimer() {
+        setSecondsRemaining(onInitialSeconds);
+        setTimerStarted(false);
+    }
+    
+    function pauseTimer() {
+        setTimerPaused(true);
+    }
+    function ifTimerFinished(isTimerFinished){
+        setTimerFinished(isTimerFinished);
+    }
+    
+    function resumeTimer() {
+        setTimerPaused(false);
+        if(secondsRemaining > 0){
+            setSecondsRemaining(secondsRemaining - 1);
+        } else{
+            setSecondsRemaining(secondsRemaining);
+        }
+    }
+    
     let secondsWithoutOffTime = secondsRemaining - 20;
     const minutes = Math.floor(secondsWithoutOffTime / 60);
     let seconds = secondsWithoutOffTime - (minutes * 60);
 
     if(timerStarted){
+        if(secondsRemaining === 0 && timerFinished === false){
+            ifTimerFinished(true);
+        }
         if(secondsRemaining <= 20){
             seconds = secondsRemaining;
-            console.log("Seconds: " + seconds);
             return (
                 <div class="innerColumnContainer">
                     <TimeAsset time="00:00" label="ON"/>
                     <TimeAsset time={`00:${seconds.toString().padStart(2, '0')}`} label="OFF"/>
-                    <ButtonContainer timerStarted={timerStarted} toggleTimer={toggleTimer} timerPaused={timerPaused}/>
+                    <ButtonContainer timerStarted={timerStarted} toggleTimer={toggleTimer} timerPaused={timerPaused} timerFinished={timerFinished}/>
                 </div>
             );
         } else{
@@ -105,7 +139,7 @@ function TimeAsset(props){
     );
 }
 
-function ButtonContainer({ timerStarted, toggleTimer, timerPaused }) {
+function ButtonContainer({ timerStarted, toggleTimer, timerPaused, timerFinished }) {
     if (timerStarted === false) {
         return (
             <div className="buttonHolder">
@@ -113,6 +147,13 @@ function ButtonContainer({ timerStarted, toggleTimer, timerPaused }) {
             </div>
         );
     } else {
+        if(timerFinished){
+            return (
+                <div className="buttonHolder">
+                    <TimerButton label="RESET" onClick={() => toggleTimer("RESET")} />
+                </div>
+            );
+        }
         if(timerPaused){
             return (
                 <div className="buttonHolder">
@@ -132,29 +173,27 @@ function ButtonContainer({ timerStarted, toggleTimer, timerPaused }) {
 }
 
 
-function TimerButton(props){
-
-    if(props.label === "START"){
-        return(
-            <div className="timerBtn start" onClick={props.onClick}>{props.label}</div>
-        );
+function TimerButton(props) {
+    let buttonClass = "";
+    switch (props.label) {
+        case "START":
+            buttonClass = "start";
+            break;
+        case "PAUSE":
+            buttonClass = "pause";
+            break;
+        case "RESET":
+            buttonClass = "reset";
+            break;
+        case "RESUME":
+            buttonClass = "resume";
+            break;
+        default:
+            break;
     }
-    else if(props.label === "PAUSE"){
-        return(
-            <div className="timerBtn pause" onClick={props.onClick}>{props.label}</div>
-        );
-    }
-    else if(props.label === "RESET"){
-        return(
-            <div className="timerBtn reset" onClick={props.onClick}>{props.label}</div>
-        );
-    }   
-    else if(props.label === "RESUME"){
-        return(
-            <div className="timerBtn resume" onClick={props.onClick}>{props.label}</div>
-        );
-    }   
+    return (
+        <div className={"timerBtn " + buttonClass} onClick={props.onClick}>{props.label}</div>
+    );
 }
-
 
 export default Timer;
